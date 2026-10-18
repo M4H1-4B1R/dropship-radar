@@ -1,0 +1,65 @@
+{
+  "kind": "youtube#videoListResponse",
+  "etag": "fixture_etag_example",
+  "items": [
+    {
+      "kind": "youtube#video",
+      "etag": "item_etag_1",
+      "id": "vidHasAsin",
+      "snippet": {
+        "publishedAt": "2026-10-11T00:00:00Z",
+        "channelId": "UCexample1",
+        "title": "TikTok made me buy this kitchen gadget",
+        "description": "Check out this collapsible bowl I found. Link: https://www.amazon.com/dp/B0ABCD1234 #kitchen #amazonfinds",
+        "channelTitle": "Reviewer One",
+        "tags": ["kitchen", "gadget"],
+        "categoryId": "22"
+      },
+      "statistics": {
+        "viewCount": "7000",
+        "likeCount": "120",
+        "commentCount": "15"
+      }
+    },
+    {
+      "kind": "youtube#video",
+      "etag": "item_etag_2",
+      "id": "vidNoAsin",
+      "snippet": {
+        "publishedAt": "2026-10-11T00:00:00Z",
+        "channelId": "UCexample2",
+        "title": "Best home essentials under $25",
+        "description": "Roundup of useful home items. No direct affiliate links in this one.",
+        "channelTitle": "Reviewer Two",
+        "categoryId": "22"
+      },
+      "statistics": {
+        "viewCount": "3500",
+        "likeCount": "60",
+        "commentCount": "8"
+      }
+    },
+    {
+      "kind": "youtube#video",
+      "etag": "item_etag_3",
+      "id": "vidToday",
+      "snippet": {
+        "publishedAt": "2026-10-18T00:00:00Z",
+        "channelId": "UCexample3",
+        "title": "New amazon must haves 2026",
+        "description": "Just dropped today. https://a.aliexpress.com/1005006123456789",
+        "channelTitle": "Reviewer Three",
+        "categoryId": "22"
+      },
+      "statistics": {
+        "viewCount": "100",
+        "likeCount": "5",
+        "commentCount": "2"
+      }
+    }
+  ],
+  "pageInfo": {
+    "totalResults": 3,
+    "resultsPerPage": 3
+  }
+}
