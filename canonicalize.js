@@ -25,9 +25,12 @@ async function readMentionsJsonl(path) {
 
 async function prepare() {
   const mentions = await readMentionsJsonl('data/mentions.jsonl');
-  const pending = buildPending(mentions);
+  const linkCache = await readJson('data/link-cache.json', {});
+  const pending = buildPending(mentions, linkCache);
   await writeJson('data/pending.json', pending);
-  console.log(`data/pending.json: ${pending.length} items`);
+  let withAsin = 0;
+  for (const p of pending) if (p.asin) withAsin++;
+  console.log(`data/pending.json: ${pending.length} items (${withAsin} carry an ASIN)`);
 }
 
 async function finalize(draftPath) {
