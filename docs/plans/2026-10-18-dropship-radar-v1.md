@@ -179,6 +179,8 @@ git commit -m "feat: extract Amazon ASINs and AliExpress item ids from descripti
 
 Run one real `search.list` + `videos.list` pair by hand with the API key, save the `videos.list` response to `fixtures/youtube-videos-response.json`, and commit it — it is public data. This fixture is what every later test runs against, so no test needs the network or the quota.
 
+**The fixture must be a captured response, not a hand-written example.** A stub proves only that the parser reads its own author's markup. If no API key is available yet, stop and say so rather than writing one by hand.
+
 - [ ] **Step 2: Write the failing tests**
 
 ```js
@@ -294,6 +296,8 @@ git commit -m "feat: canonicalization prepare/finalize with firstSeen preservati
 - [ ] **Step 1: Write `peek.js` and capture the Amazon fixture**
 
 `peek.js <url>` opens a headed browser, waits, writes the page HTML and innerText to `fixtures/`. Run once against a real ASIN page, commit `fixtures/amazon-product.html`. All parser iteration from here runs offline against this file — see Global Constraints.
+
+**The fixture must be the captured page, not a hand-written example.** A real Amazon product page is 500KB-2MB and contains several `.a-offscreen` price spans, rank in more than one shape, and category-dependent layout. A clean stub hides exactly the ambiguity the parser exists to resolve. If the capture cannot be run, stop and say so rather than writing one by hand.
 
 - [ ] **Step 2: Write the failing parser tests**
 
@@ -420,6 +424,148 @@ git commit -m "feat: scoring, shortlist CSV and evidence brief"
 
 ---
 
+### Task 7: Resolve Amazon short links
+
+**Why:** measured over 452 real mentions, only 2.7% carry a direct `/dp/` link, while 20.4% carry an
+`amzn.to` shortener — 1,449 distinct ones. The shortener path holds no ASIN; a HEAD request with
+redirect-follow recovers it. Verified on a sample: `amzn.to/3se9dWO` → `amazon.com/dp/B018IBEHQU`.
+Without this task the Amazon validator has 12 products to work with instead of hundreds. See spec §2.2.
+
+**Files:**
+- Create: `resolve-links.js`
+- Modify: `lib/extract.js` (add `extractShortLinks`, `asinFromUrl`; change `buildPending` signature)
+- Modify: `canonicalize.js` (pass the link cache to `buildPending`)
+- Test: `lib/extract.test.js` (extend)
+
+**Interfaces:**
+- Consumes: `readJson`, `writeJson` (Task 1); `jitter`, `sleep` (Task 1); `data/mentions.jsonl` (Task 3).
+- Produces: `extractShortLinks(text) -> string[]` (deduped `amzn.to`/`a.co`/`amzn.eu` URLs, trailing
+  punctuation stripped); `asinFromUrl(url) -> string|null`; `buildPending(mentions, linkCache)`.
+  Writes `data/link-cache.json` keyed by URL → `{ asin, resolvedAt, reason? }`.
+- **No new dependency** — native `fetch` with `redirect: 'follow'`.
+
+- [ ] **Step 1: Write the failing tests**
+
+```js
+test('extractShortLinks finds amzn.to, a.co and amzn.eu URLs')
+test('extractShortLinks strips trailing ) ] , . from a URL at the end of a sentence')
+test('extractShortLinks dedupes a link repeated in one description')
+test('extractShortLinks ignores a full amazon.com/dp link')         // Task 2 already handles those
+test('asinFromUrl reads the ASIN from a resolved /dp/<ASIN>?tag=... URL')
+test('asinFromUrl reads the ASIN from a /gp/product/<ASIN> URL')
+test('asinFromUrl returns null for a /shop/<creator> storefront URL')
+test('buildPending attaches the ASIN from the link cache when the mention has none')
+test('buildPending prefers the mention\'s own asin over a cached one')
+test('buildPending ignores a cache entry whose asin is null')
+```
+
+- [ ] **Step 2: Run tests to verify they fail**
+
+Run: `node --test lib/extract.test.js`
+Expected: FAIL, `extractShortLinks is not a function`.
+
+- [ ] **Step 3: Implement the three pure functions in `lib/extract.js`**
+
+`asinFromUrl` matches `/dp/<10 alnum>` and `/gp/product/<10 alnum>` only — a storefront or vanity URL
+returns `null`. `buildPending` gains a second parameter `linkCache` (default `{}`) so existing callers
+keep working.
+
+- [ ] **Step 4: Run tests to verify they pass**
+
+Run: `node --test lib/extract.test.js`
+Expected: PASS.
+
+- [ ] **Step 5: Implement `resolve-links.js`**
+
+Read `mentions.jsonl`, collect every short link via `extractShortLinks`, drop URLs already keyed in
+`data/link-cache.json` (that is the resume key — including ones cached as `asin: null`), then resolve
+the rest: `fetch(url, { method: 'HEAD', redirect: 'follow' })`, read `response.url`, run `asinFromUrl`.
+A 405 on the final page is expected and harmless — the redirect has already landed.
+
+Store `{ asin, resolvedAt }`, or `{ asin: null, reason, resolvedAt }` for a link that resolved to no
+product. Write the cache after every 25 resolutions so an interrupted run keeps its work.
+
+Pacing: at most 4 in flight, `jitter` between batches, values from `config.js`.
+**On HTTP 429: stop, write the cache, exit 0 with a clear message. Never retry in a loop.**
+
+- [ ] **Step 6: Wire the cache into `canonicalize.js`**
+
+`--prepare` reads `data/link-cache.json` and passes it to `buildPending`. `mentions.jsonl` is not
+rewritten — spec §5.5.
+
+- [ ] **Step 7: Run it for real and re-measure**
+
+Run: `node resolve-links.js` then count mentions with a resolvable ASIN.
+Expected: coverage far above the 2.7% baseline. Record the real number in spec §13 — a figure below
+~30% means the Amazon validator needs a name-search fallback before more validators get built.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add resolve-links.js canonicalize.js lib/extract.js lib/extract.test.js
+git commit -m "feat: resolve amzn.to short links to ASINs with a disk cache"
+```
+
+---
+
+### Task 8: Real-data verification
+
+Tasks 1-7 can pass every test against synthetic fixtures. This task is where the code meets the
+actual sites. **Nothing the pipeline outputs should be trusted until this task is green.**
+
+**Files:**
+- Replace: `fixtures/amazon-product.html`, `fixtures/youtube-videos-response.json` (captured, not written)
+- Modify: `lib/extract.js` (whatever the real markup breaks), `lib/extract.test.js`
+- Modify: `lib/store.test.js`, `validate.test.js` (temp paths)
+
+**Interfaces:** no new ones. This task changes implementations, not signatures.
+
+- [ ] **Step 1: Point test artifacts at a temp directory**
+
+`lib/store.test.js` and `validate.test.js` currently write into `data/`. Use `os.tmpdir()` so test
+output can never be mistaken for pipeline data.
+
+- [x] **Step 2: Set up the API key** — DONE 2026-10-19. Key in `.env`, restricted to YouTube Data API v3.
+
+- [ ] **Step 3: Capture the real YouTube fixture**
+
+Run `seed-youtube.js` against one query. Save the raw `videos.list` response over
+`fixtures/youtube-videos-response.json`. Re-run `node --test lib/extract.test.js`.
+Expected: tests may fail on real description text. Fix `buildMentions` until they pass.
+
+- [x] **Step 4: Measure the ASIN hit-rate** — DONE 2026-10-19 over 452 real mentions. Direct-link
+hit-rate 2.7%; `amzn.to` shorteners 20.4% (1,449 distinct). Recorded in spec §2.2 and §13, and it is
+what Task 7 exists to fix. Re-measure after Task 7 Step 7.
+
+- [ ] **Step 5: Capture the real Amazon fixture**
+
+`node peek.js https://www.amazon.com/dp/<ASIN>` using an ASIN from Step 4. Commit the captured HTML
+over `fixtures/amazon-product.html`.
+
+- [ ] **Step 6: Re-run the parser tests against real markup**
+
+Run: `node --test lib/extract.test.js`
+Expected: **failures.** Most likely the price (several `.a-offscreen` candidates) and the rank
+(multiple formats). Fix `parseAmazonProduct` until green, adding a test per real-world shape found.
+
+- [ ] **Step 7: Run the whole pipeline end to end**
+
+`npm run seed:youtube` → `node canonicalize.js --prepare` → Claude step → `--finalize` →
+`node validate.js --max-products 3` → `node score.js`
+Expected: `data/shortlist.csv` with real rows; every `status` either `ok` or an honest `blocked`.
+
+- [ ] **Step 8: Commit**
+
+```bash
+git add -A && git commit -m "fix: replace synthetic fixtures with captured pages, fix parsers against real markup"
+```
+
+---
+
 ## Done when
 
-`npm test` is green, and one command sequence takes an empty `data/` to a `shortlist.csv` with real products in it. Confidence scores will be low — one validator of four is live. That is correct behavior, not a defect.
+`npm test` is green **against captured fixtures**, and one command sequence takes an empty `data/` to
+a `shortlist.csv` with real products in it. Confidence scores will be low — one validator of four is
+live. That is correct behavior, not a defect.
+
+Green tests against hand-written fixtures mean nothing here. Task 7 is the gate.

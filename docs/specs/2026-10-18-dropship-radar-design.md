@@ -54,10 +54,34 @@ Conclusion: no product signal. Revisit only as an optional topic-level tailwind,
 
 ### 2.2 Why YouTube is the primary seed
 
-Review-video descriptions carry affiliate links: `amazon.com/dp/<ASIN>` and AliExpress item URLs.
-That yields an **exact join key** instead of a product name, which removes the noisiest part of
-cross-referencing. Amazon validation becomes "fetch this ASIN" rather than "search this phrase and
-hope the top hit is the same object".
+Review-video descriptions carry affiliate links, which yield an **exact join key** instead of a
+product name. That removes the noisiest part of cross-referencing: Amazon validation becomes "fetch
+this ASIN" rather than "search this phrase and hope the top hit is the same object".
+
+**Measured 2026-10-19 over 452 real mentions from 10 queries** — the link form matters more than
+expected:
+
+| Link form in description | Mentions | Share |
+|---|---|---|
+| `amzn.to` shortener | 92 | 20.4% |
+| direct `amazon.com/dp/` | 13 | 2.9% |
+| `amzn.eu` / `a.co` | 6 | 1.3% |
+| `amazon.com/gp/product/` | 0 | 0% |
+| any AliExpress link | 3 | 0.7% |
+| mentions "amazon" at all | 361 | 79.9% |
+
+Creators overwhelmingly use the `amzn.to` shortener, whose path is an opaque slug carrying no ASIN.
+**1,449 distinct short links** appeared in those 452 mentions. A HEAD request with redirect-follow
+resolves each to its real product URL — verified on a sample: `amzn.to/3se9dWO` →
+`amazon.com/dp/B018IBEHQU`. Free, keyless, cacheable.
+
+Without resolution the hit-rate is 2.7%, which would starve the pipeline. With it, the ~1,449 links
+are the actual candidate pool. Hence the `resolve-links` stage in §4.
+
+Also measured: 11.7% of descriptions route through a link aggregator (linktr.ee, beacons.ai, ltk),
+and the direct `amazon.com` links that do appear are mostly creator **storefronts**
+(`/shop/<creator>`, `/shop/.../list/<id>`), not product pages. Storefront list pages hold many
+products each and could be mined later; out of scope for v1.
 
 It is also the only officially free, keyed API in the design — no scraping, no block risk, no browser.
 
@@ -79,6 +103,7 @@ dropship-radar/
   seed-youtube.js        YT Data API → mentions.jsonl
   seed-reddit.js         reddit public JSON → mentions.jsonl
   seed-amazon.js         Movers & Shakers, headed browser → mentions.jsonl
+  resolve-links.js       amzn.to/a.co redirects → link-cache.json  (cached, keyless)
   canonicalize.js        --prepare → pending.json   (Claude then writes products.json)
   validate.js            products.json → snapshots.jsonl
   score.js               snapshots.jsonl → shortlist.csv + brief.md
@@ -109,7 +134,9 @@ total), not imported. Three small files beat a shared package for two unrelated 
 ```
 seed-*.js  →  data/mentions.jsonl      append per mention
     ↓
-canonicalize.js --prepare → data/pending.json
+resolve-links.js → data/link-cache.json   short link → ASIN, resolved once, cached
+    ↓
+canonicalize.js --prepare → data/pending.json   (joins the cache in)
     ↓  [Claude Code session]
 data/products.json                      rewritten whole, small
     ↓
@@ -125,6 +152,7 @@ Each stage is runnable standalone. `run.js` only sequences them via `spawnSync`,
 | `seed-youtube` | video IDs already in `mentions.jsonl` |
 | `seed-reddit` | post IDs already in `mentions.jsonl` |
 | `seed-amazon` | run date already seen |
+| `resolve-links` | URLs already keyed in `link-cache.json` |
 | `validate` | `productId` already snapshotted with today's `runAt` date |
 
 ## 5. Data contracts
@@ -196,6 +224,23 @@ carries `status: "ok" | "blocked" | "not_found"`. A blocked AliExpress lookup mu
 zero supplier cost. `score.js` treats a non-`ok` signal as absent, not as a value.
 
 Snapshots are never rewritten. `score.js` groups all historical lines by `productId`.
+
+### 5.5 `link-cache.json` (rewritten whole)
+
+```jsonc
+{
+  "https://amzn.to/3se9dWO": { "asin": "B018IBEHQU", "resolvedAt": "2026-10-19" },
+  "https://amzn.to/3deadXX": { "asin": null, "reason": "no_dp_in_target", "resolvedAt": "2026-10-19" }
+}
+```
+
+A resolved-to-nothing link is stored with `asin: null` and a reason, so it is never retried on every
+run. `null` here means "resolved, no product" — distinct from a key being absent, which means "not
+yet attempted". The same ok/blocked/not_found discipline as §5.4, in a different shape.
+
+**`mentions.jsonl` is never rewritten to backfill ASINs.** The cache is joined in at canonicalization
+time, which keeps the append-only history intact and makes already-collected mentions usable without
+spending API quota again.
 
 ## 6. Validator contract
 
@@ -296,8 +341,11 @@ Each slice ends with something runnable.
 
 1. **Skeleton** — `config.js`, copied `lib/`, `.env.example`, `.gitignore`, `store`/`wait` tests.
 2. **Seed: YouTube** — the highest-value source, and the only one needing no browser. Ends with
-   `mentions.jsonl` containing ASINs.
-3. **Canonicalize** — `--prepare` plus the documented Claude step. Ends with `products.json`.
+   `mentions.jsonl`.
+2a. **Resolve links** — `amzn.to`/`a.co` redirects → `link-cache.json`. Without this the ASIN
+   hit-rate is 2.7% and nothing downstream has enough products to rank (§2.2).
+3. **Canonicalize** — `--prepare` (joining the link cache) plus the documented Claude step. Ends with
+   `products.json`.
 4. **Validator framework + Amazon** — registry, `validate.js`, snapshot writing, one real validator.
 5. **Scoring + output** — `lib/score.js`, `score.js`, `shortlist.csv`, `brief.md`. **End-to-end
    pipeline works here** on one validator, with low confidence scores that are honest about it.
@@ -321,9 +369,13 @@ Slices 6-8 are independent and can be reordered or dropped without breaking 1-5.
 
 - **Validator parsers are unproven against live markup.** Nothing in §6-7 has been tested against a
   real Amazon, AliExpress or Ads Library page. This is the estimate most likely to move.
-- **ASIN hit-rate in YouTube descriptions is assumed, not measured.** If reviewers favour link
-  aggregators (linktr.ee, beacons.ai) over direct links, the exact-key advantage degrades to name
-  matching and the Amazon validator gets materially harder.
+- **ASIN hit-rate is now measured, and depends entirely on link resolution** (§2.2): 2.7% without it,
+  ~1,449 resolvable short links with it. Resolution was verified on a 3-link sample only. Expect real
+  coverage below 100% — dead links, region redirects, and links pointing at storefronts rather than
+  products. If `amzn.to` rate-limits at volume, the resolver must stop on 429, not grind.
+- **Query quality is mediocre.** "tiktok made me buy it" surfaced talk shows and vlogs rather than
+  affiliate reviewers. 79.9% of mentions name Amazon, so the queries work, but filtering to videos
+  that actually carry affiliate links would raise signal. A `config.js` change, not a code change.
 - **Scoring weights are uncalibrated.** First shortlist should be checked against products already
   known to have won or lost before the numbers are trusted.
 - **Shopify store count via a search engine is a rough proxy** for saturation, biased by indexing lag.
