@@ -270,12 +270,17 @@ In `lib/score.js`, pure, fully tested.
 
 | Term | Formula | Role |
 |---|---|---|
-| `margin` | `(amazon.price − aliexpress.cost) / amazon.price` | **Hard gate**: markup < 2.5x → drop |
+| `margin` | markup multiple: `amazon.price / aliexpress.cost` | **Hard gate**: markup < 2.5x → drop. `null` when the cost is missing, blocked or zero — never `Infinity`, never a fake 0 |
+| `gross margin` | `(amazon.price − aliexpress.cost) / amazon.price` | Reported next to the markup in the brief; never used for a gate |
 | `ad_proof` | `activeCount × maxRunDays` | Heaviest weight in run 1 |
 | `demand` | mean of its three components, each min-max normalized across the current candidate set: `viewsPerDay`, Amazon `rankDelta`, Reddit mention count | 0-1; absent components are excluded from the mean, not treated as 0 |
 | `saturation` | `shopify.storeCount` | Penalty — high means late |
 | `durability` | slope of `ad_proof` + `demand` across snapshots | Off below 3 snapshots; heaviest once on |
 | `confidence` | fraction of **registered** validators returning `ok` (not of all four — a one-validator run can reach 1.0) | Displayed; below 0.5 cannot rank in the top 3 |
+
+The markup multiple, not the gross ratio, is what the gate uses: the gate is expressed in
+multiples (2.5x), so the gate value and the margin value have to be the same number. The gross
+ratio is kept alongside it for reading, not for deciding.
 
 Hard gates, applied before weighting:
 
@@ -285,6 +290,11 @@ Hard gates, applied before weighting:
   otherwise a run without the Ads Library validator would drop every candidate.
 - `margin` uncomputable because either price signal is non-`ok` → not dropped, but capped out of the
   top 3 and flagged in the brief.
+
+Ranking follows the caps literally: products that earn a top-3 slot (a computable margin and a
+confidence of at least 0.5) take ranks 1, 2, 3; every other candidate is ranked from 4 downwards, so
+a v1 run without the AliExpress validator produces a list that starts at rank 4 rather than a list
+whose first three entries broke the rule. The brief says so in one line when it happens.
 
 **Why `ad_proof` carries the most weight:** a competitor paying to run the same ad for 60+ days is
 unit-economics evidence produced by someone who has the real numbers. Views and upvotes only prove

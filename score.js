@@ -7,7 +7,7 @@ import path from 'node:path';
 import { stringify } from 'csv-stringify/sync';
 import { readJson } from './lib/store.js';
 import { mentionId } from './lib/extract.js';
-import { evaluateProducts, renderBrief } from './lib/score.js';
+import { evaluateProducts, renderBrief, assignMentions } from './lib/score.js';
 import config from './config.js';
 
 const SNAPSHOTS_PATH = 'data/snapshots.jsonl';
@@ -93,6 +93,7 @@ async function main() {
   }
 
   const mentionsById = new Map(mentions.map((m) => [mentionId(m), m]));
+  const { byProduct: mentionsByProduct, sharedAsins } = assignMentions(products, mentionsById);
 
   // The candidate set: every known product, plus any product that only shows
   // up in the snapshot history (so nothing is silently lost).
@@ -100,17 +101,23 @@ async function main() {
   const byProduct = {};
   for (const id of ids) {
     const product = products.find((p) => p.id === id) || { id, name: id, category: '', asins: [] };
-    const productMentions = (product.mentionIds || [])
-      .map((id2) => mentionsById.get(id2))
-      .filter(Boolean);
     byProduct[id] = {
       product,
       snapshots: byProductId.get(id) || [],
-      mentions: productMentions,
+      mentions: mentionsByProduct[id] || [],
     };
   }
 
   const { ranked, dropped } = evaluateProducts(byProduct, config);
+
+  const notes = [];
+  if (sharedAsins.length) {
+    notes.push(
+      'Shared ASINs — the same product canonicalized into more than one entry. Its demand is ' +
+        'counted once: ' +
+        sharedAsins.map(([asin, owners]) => `${asin} (${owners.join(', ')})`).join('; ')
+    );
+  }
 
   const csv = stringify(ranked.map(toCsvRow), { header: true, columns: CSV_COLUMNS });
   await mkdir(path.dirname(CSV_PATH), { recursive: true });
@@ -119,6 +126,7 @@ async function main() {
   const registry = await import('./validators/index.js');
   const brief = renderBrief(ranked, {
     dropped,
+    notes,
     validators: registry.default.map((v) => v.name),
     generatedAt: new Date().toISOString(),
   });
