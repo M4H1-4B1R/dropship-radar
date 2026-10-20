@@ -6,16 +6,19 @@ import { parseAmazonProduct } from '../lib/extract.js';
 
 export default {
   name: 'amazon',
-  needs: ['asin'],
+  // products.json stores `asins: [...]` (spec §5.2); a single `asin` is also
+  // accepted so a hand-written product file works.
+  needs: ['asins'],
   cost: 'browser',
   async probe(product, ctx) {
-    if (!product.asin) return { status: 'not_found' };
+    const asin = product.asin || (Array.isArray(product.asins) ? product.asins[0] : null);
+    if (!asin) return { status: 'not_found' };
     let browser;
     try {
       const launched = await openHeadedGuest();
       browser = launched.browser;
       const page = launched.page;
-      await page.goto(`https://www.amazon.com/dp/${product.asin}`, {
+      await page.goto(`https://www.amazon.com/dp/${asin}`, {
         waitUntil: 'domcontentloaded',
         timeout: 30000,
       });
