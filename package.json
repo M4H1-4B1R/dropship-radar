@@ -12,7 +12,7 @@
     "score": "node score.js",
     "resolve": "node resolve-links.js"
   },
-  "devDependencies": {
+  "dependencies": {
     "playwright": "^1.53.0",
     "csv-stringify": "^6.5.1"
   }
