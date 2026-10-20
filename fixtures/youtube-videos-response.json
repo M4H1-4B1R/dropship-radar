@@ -1,65 +1,89 @@
 {
   "kind": "youtube#videoListResponse",
-  "etag": "fixture_etag_example",
   "items": [
     {
-      "kind": "youtube#video",
-      "etag": "item_etag_1",
-      "id": "vidHasAsin",
+      "id": "5LRf_4EF5vs",
       "snippet": {
-        "publishedAt": "2026-10-11T00:00:00Z",
-        "channelId": "UCexample1",
-        "title": "TikTok made me buy this kitchen gadget",
-        "description": "Check out this collapsible bowl I found. Link: https://www.amazon.com/dp/B0ABCD1234 #kitchen #amazonfinds",
-        "channelTitle": "Reviewer One",
-        "tags": ["kitchen", "gadget"],
-        "categoryId": "22"
+        "publishedAt": "2026-02-26T00:00:09Z",
+        "title": "20+ Amazon Must-Haves That Are Actually Worth It in 2026 🛒 | Tried & Tested Finds",
+        "description": "What's your favorite amazon MUST HAVE?! I've got 23 items that i've been using NON STOP lately and I know you guys will love them too. XO \n\nSIGN UP FOR MY *FREE* EMAIL LIST HERE: https://moriahcrobinson.myflodesk.com/emaillist\n\n1. SKG Neck Massager: http://www.amazon.com/dp/B0GCFPRJJ4?maas=maas_adg_C1CA8B70F147445255DEB2399212B5A3_afap_abs&ref_=aa_maas&tag=maas\n\nCode SQHK9821 will get you 20% off ! \n\n2. Weighted Blanket: https://urlgeni.us/amzn/hdG03K\n\n3.Bread Box: https://urlgeni.us/amzn/tx0V2s\n\n4. Bread Knife: https://urlgeni.us/amzn/Itfi8W\n\n5. Nespresso Descaler: https://urlgeni.us/amzn/WI1oTK\n\n6. Milk Frother: https://urlgeni.us/amzn/uhwqEN\n\n7. Kitchen Scissors: https://urlgeni.us/amzn/7EgNT0\n\n8. Spark Drink: https://urlgeni.us/amzn/OcMtRX\n\n9. Humidity Thermometer: https://urlgeni.us/amzn/gQjHTc\n\n10. Pilates Circle: https://urlgeni.us/amzn/yUTMZ6\n\n11. Wrap Tie Top: https://urlgeni.us/amzn/N51IDz\n\n12. Sports bra that’s double lined (rum raisin/mulch): https://urlgeni.us/amzn/Hydc3j\nMatching leggings: https://urlgeni.us/amzn/er5tSg\n\n13. Grace and stella Eye patches: https://urlgeni.us/amzn/TzirFB\n\n14. Collagen Spray for Hair: https://urlgeni.us/amzn/yQpkQ0\n\n15. Dae Dry Heat protectant: https://urlgeni.us/amzn/9buGHq\n\n16. Amika Anti Frizz: https://urlgeni.us/amzn/rLYNWS\n\n17. OPI Quick Dry: https://urlgeni.us/amzn/9XRKNH\n\n18. Under Eye Concealer: https://urlgeni.us/amzn/ZpcUUp\n\n19. Ritual Cream Body Oil and Lotion: https://urlgeni.us/amzn/Go4cYH\n\n20. Round Dog Beds: https://urlgeni.us/amzn/uODs26\n\n21. Checkered Print Dog Mats: https://urlgeni.us/amzn/iLZPH5\n\n22. Owala Travel Mug: https://urlgeni.us/amzn/0Ivl2p\n\n23. Toddler Hangers: https://urlgeni.us/amzn/lJlb27\n\nCHAPTERS\n0:00 Intro \n0:32 Amazon Top Must Haves\n9:27 Fashion Must Haves\n10:18 Beauty Must Haves \n14:36 Animal Must Haves\n16:36 Sams Must Haves\n17:02 Toddler Must Haves\n17:24 Outro  \n\nALL MY SOCIALS + OUTFIT LINKS \nShopMy: https://shopmy.us/moriahcrobinson\nLTK: https://www.shopltk.com/explore/moriahcrobinson\nAmazon Storefront: https://www.amazon.com/shop/moriahrobinson\nInstagram: https://www.instagram.com/moriahcrobinson/\nTikTok: https://bit.ly/3KLofgR \n\n**Series Inquiries** courtney@silkwormsocial.com (Subject line: Moriah Robinson) \n\n**Some coupon codes, mavely, walmrt.us links are affiliate. By purchasing an item from the affiliate link I receive a small commission. However, you are not charged more or less by clicking or purchasing from a link. As an Amazon Associate I earn from qualifying purchases. This video is sponsored by SKG. As always, all opinions are my own.",
+        "channelTitle": "Moriah Robinson"
       },
       "statistics": {
-        "viewCount": "7000",
-        "likeCount": "120",
-        "commentCount": "15"
+        "viewCount": "10112",
+        "likeCount": "511",
+        "commentCount": "33"
       }
     },
     {
-      "kind": "youtube#video",
-      "etag": "item_etag_2",
-      "id": "vidNoAsin",
+      "id": "ePzkMP3tFZ4",
       "snippet": {
-        "publishedAt": "2026-10-11T00:00:00Z",
-        "channelId": "UCexample2",
-        "title": "Best home essentials under $25",
-        "description": "Roundup of useful home items. No direct affiliate links in this one.",
-        "channelTitle": "Reviewer Two",
-        "categoryId": "22"
+        "publishedAt": "2024-08-17T15:00:30Z",
+        "title": "I Tested the Weirdest Amazon Items",
+        "description": "weird lol\nbuy JOYRIDE on Amazon: https://www.amazon.com/dp/B0DD4TT2SM\n*if you're watching this when the video comes out it will be a pre-order*",
+        "channelTitle": "Ryan Trahan"
       },
       "statistics": {
-        "viewCount": "3500",
-        "likeCount": "60",
-        "commentCount": "8"
+        "viewCount": "17853054",
+        "likeCount": "301734",
+        "commentCount": "12963"
       }
     },
     {
-      "kind": "youtube#video",
-      "etag": "item_etag_3",
-      "id": "vidToday",
+      "id": "QB4sGbPgxLc",
       "snippet": {
-        "publishedAt": "2026-10-18T00:00:00Z",
-        "channelId": "UCexample3",
-        "title": "New amazon must haves 2026",
-        "description": "Just dropped today. https://a.aliexpress.com/1005006123456789",
-        "channelTitle": "Reviewer Three",
-        "categoryId": "22"
+        "publishedAt": "2021-02-19T20:44:23Z",
+        "title": "TikTok Made Me Buy It | Amazon Finds + Links | Part 1",
+        "description": "TikTok Made Me Buy It | Amazon Finds + Links Part 1 - full playlist →\nhttps://www.youtube.com/playlist?list=PLOA_3zp1EMKf1QrCbxbH5F1fgmFdxO5lE\n\nSHOP THIS VIDEO\nLiquid Plastic Welding Kit https://amzn.to/3se9dWO\nWireless Label Maker https://amzn.to/3bkaTaJ\nNo Spill Ice Tray https://amzn.to/3qBWT2r\nCorner Sink Strainer https://amzn.to/2NFSk8D\nEmergency Sleeping Bag https://amzn.to/37slC1p\nSocket Switch Box Recovery https://amzn.to/3ufckQa\nPortable Brow + Facial Hair Remover https://amzn.to/37vFnp6\n\nDoor Stopper Wall Protector https://amzn.to/3qH6SDM\nCommand Hook Broom + Mop Grippers https://amzn.to/2M6XVo1\nWallpaper Border Peel and Stick https://amzn.to/3bp2gLP\nElectric Potato Peeler https://amzn.to/3bl4PPb\nShopping Bag with Wheels https://amzn.to/3kdVa0Y\nCar Seat Gap Fillers https://amzn.to/3bmm7vf\nFoldable Socket Adapter https://amzn.to/2NqW2mT\n\niPad Case with Wireless Detachable Keyboard https://amzn.to/2Nh9KJ4\nRice/Dry Food Dispenser https://amzn.to/3pDfN7y\nFood Huggers https://amzn.to/3dzksVR\nKitchen Utensils https://amzn.to/2NrrCkh\nCutting Boards https://amzn.to/3duY1kF\nHeadboard Stoppers https://amzn.to/3k67YX2\nAutomatic Pan Stirrer https://amzn.to/3ufKFPd\n\nBaby Utensils https://amzn.to/3udZl1b\nPanoramic Rear View Mirror https://amzn.to/3sf9F7d\nClocky Alarm Clock on Wheels https://amzn.to/3pC8EVa\nHeated Lunch Box https://amzn.to/2ZxPRjd\nOutlets with Light Sensors https://amzn.to/37O3Shx\nRotating Utensil Holder https://amzn.to/3ufmkJi\nDigital Picture Frame https://amzn.to/2ZzJOLe\nAnti Gravity Phone Case https://amzn.to/3aDJlxC\n\n\nIf you enjoyed this video please like and subscribe for more!\n\nAll credit goes to the TikTok creators - make sure you follow them on their channels!\n\nThank you for watching ❤\nTikTok Hacks \n\n\n\nCopyright Disclaimer Under Section 107 of the Copyright Act 1976, allowance is made for \"fair use\" for purposes such as criticism, comment, news reporting, teaching, scholar ship, and research. Fair use is a use permitted by copyright statute that might otherwise be infringing. Non-profit, educational or personal use tips the balance in favor of fair use.\n\n#tiktokmademebuyit #amazonfinds #founditonamazon",
+        "channelTitle": "TIKTOK HACKS"
       },
       "statistics": {
-        "viewCount": "100",
-        "likeCount": "5",
-        "commentCount": "2"
+        "viewCount": "396084",
+        "likeCount": "9541",
+        "commentCount": "213"
+      }
+    },
+    {
+      "id": "mz3-fdE17CM",
+      "snippet": {
+        "publishedAt": "2021-04-13T17:00:30Z",
+        "title": "TIKTOK MADE ME BUY IT AMAZON MUST HAVES AMAZON FAVORITES",
+        "description": "TIKTOK MADE ME BUY IT AMAZON MUST HAVES AMAZON FAVORITES\n\nLinks to the products:\n\nPremium Carry Tray   https://amzn.to/3dstcwj\nNight Light Projector Led Lamp https://amzn.to/2QkCqSi\nIonic Hair Straightener Brush https://amzn.to/3mHtx1q\nThe Negg Boiled Egg Peeler https://amzn.to/3dd6oAG\nSUN VISOR HANGING TISSUE BOX https://amzn.to/3dX7Vu7\nCAR SEAT HOOK HANGER https://amzn.to/2OPdoKY\n\nToothpaste dispenser https://amzn.to/2ONDNsy\nNaipo Foot Massager with Heat https://amzn.to/3wT5PE0\nAmong Us beanies https://amzn.to/3dWAveV\nAmong Us Keychain https://amzn.to/3dZxTwN\nElectric Scrub Brush https://amzn.to/3mJBByL\n\nKitchen Drawer Cutlery Organizer https://amzn.to/3d9A7L0\nBamboo Kitchen Drawer Dividers https://amzn.to/3uMJI0d\nThe Pampered Chef Mix N Chop https://amzn.to/32aEJdy\nMarble Makeup Bag  https://amzn.to/2Rw0WAJ\nPortable Gas stove https://amzn.to/3mHmmGs\n\nCarpet Spot Remover https://amzn.to/3tf6YUl\nSalad BPA-Free Lunch Container https://amzn.to/329oKMH\nSmart Baby Chair  https://amzn.to/32bkKeQ\nHands Casting Kit https://amzn.to/3g4ALLJ\nFlex Pot Clip https://amzn.to/2QoK5PS\n\nA Weather Predicting Instrument https://amzn.to/3uLB3eC\nGold Measuring Spoons https://amzn.to/3mTjS8h\nSmall Zipper Pouches  https://amzn.to/2PXQP7i\nSecurity Camera Outdoor https://amzn.to/3mGtkeO\nTravel Garment Steamer https://amzn.to/3se3Bvw\n\n\nDisclaimer: I don’t own the rights to any of the images used to create this video. Also, all links are affiliate links in which I earn a small commission if you choose to use them. Thank you! \n\nFor copyright matters please contact us at: yaerwai@gmail.com \n\n#amazon #favorites #tiktok #buy",
+        "channelTitle": "Awesome Finds"
+      },
+      "statistics": {
+        "viewCount": "1048644",
+        "likeCount": "17635",
+        "commentCount": "353"
+      }
+    },
+    {
+      "id": "7i1VRwr9npM",
+      "snippet": {
+        "publishedAt": "2025-12-07T01:00:09Z",
+        "title": "Amazon Must Haves Everyone's Buying Right Now | TikTok Made Me Buy It",
+        "description": "*** Special Offer and Discount\nTry Amazon Prime 30-Day Free Trial - https://amzn.to/3O4LING\n***\nFor any business inquiry / issue  - yuvaldavidiyt@gmail.com\n\nLinks - 00:00 - start\n\n00:05 - Drink Chiller - https://amzlink.to/az0W1bP9xbvXk\n\n00:17 - Pillow Talk - https://amzlink.to/az0oEXNcYBPeI\nGloves - https://amzlink.to/az0RRlwzeIud1\nSoda Can - https://amzlink.to/az02OsNtIAkGt\nWallet  - https://amzlink.to/az0pEBk9QC383\nSuction Phone - https://amzlink.to/az0mafiESO8dX\nSocks  - https://amzlink.to/az0Z6JaxhsRZq\nAirbrush  - https://amzlink.to/az0yb1atSrQ2p\nBrush  - https://amzlink.to/az01wyGQPvpu2\n\n00:45 - Camera  - https://amzlink.to/az0J4A1g3UAo7\n\n00:58 - Wall Cleaner - https://amzlink.to/az0nG9FfLOvis\n\n01:13 - Vacuum Robot - https://amzlink.to/az0b87wRtja0b\nWall Sconces Plug in - https://amzlink.to/az0POiloWXkou\n\n01:27 - Wallet Stand - https://amzlink.to/az0dQVw3swC8m\nBluetooth Keyboard - https://amzlink.to/az0DDLLwuVlRc\nHeated Razor - https://amzlink.to/az0Jt5TZExY7m\nScratcher  - https://amzlink.to/az0mDIgfXswJy\n\n01:51 - Rotating Grain Storage - https://amzlink.to/az0TQqjpG1pSO\nGlass Storage - https://amzlink.to/az0LlfNJ1pEXP\n\n02:51 - Multi-Function Single Sofa - https://amzlink.to/az0u8RIsyfu2h\n\n03:10 - Shoe Cabinet - https://amzlink.to/az009wORN6LZ6\n\n03:26 - Food Warming Mat - https://amzlink.to/az0Xp0JwnnbXr\n\n03:41 - Car Storage - https://amzlink.to/az0T8f7m50UdP\nMicrofiber Cleaning - https://amzlink.to/az08af9H1Rp0c\nVacuum Cleaner - https://amzlink.to/az0DN6JhgW6wp\nWater Jug - https://amzlink.to/az0yOJktnJdH2\n\n03:59 - Bodysuits  - https://amzlink.to/az0ttemfaumky\nSweater Pullover - https://amzlink.to/az0NnFcWFRoAs\nMini Dress - https://amzlink.to/az0COu3csXmyM\nChest Pocket - https://amzlink.to/az02mmCugYlvN\nCoat Peacoat with Belt - https://amzlink.to/az0AOP4hVEF09\n\n06:03 - Sweater  - https://amzlink.to/az0BoCPnqejdF\nMini Dress - https://amzlink.to/az036ieGaEMcG\nColor Knitwear - https://amzlink.to/az0cw2lAfWXOG\nSweatpants  - https://amzlink.to/az0V0eXrtomps\n\n08:16 - Garage Light - https://amzlink.to/az0pkJvT9kiSC\n\n08:34 - Foindtower Set - https://amzlink.to/az0WhRQ4PDuQJ\n\n08:41 - Fall Decorations - https://amzlink.to/az0usy00LVkqM\n\n08:54 - Glass Carafe - https://amzlink.to/az0is3Z59ZDGW\n\n09:05 - Round Vinyl - https://amzlink.to/az0viacvKJ9XS\nModtek Curtain - https://amzlink.to/az0hNGENqHoYC\nIce Cylinder - https://amzlink.to/az0dXiIpvTNxK\nHair Dryer Stand - https://amzlink.to/az0DIMVJKCRBa\nPlant Risers - https://amzlink.to/az07JDpvd5gpk\n\n09:34 - Hatchback Cabana - https://amzlink.to/az06vDHWUkqBB\n\n09:44 - Clothes - https://amzlink.to/az0Z8Eu4NHHfi\nSkirt  - https://amzlink.to/az0GB6vqrZpki\nWallet - https://amzlink.to/az0RT2pj3P6EK\nBoots  - https://amzlink.to/az0FEWpAFdROO\nPiece Sets - https://amzlink.to/az0FC5XjAkkrT\nEarrings - https://amzlink.to/az0D06HVbZ2ma\n\n10:03 - Ceramic Baking - https://amzlink.to/az05CXXcfLUSS\n\n10:18 - Toothpaste Tube Squeezer - https://amzlink.to/az0cOkX3Z0hcx\n\n10:32 - Pants  - https://amzlink.to/az0O6FtRWKnxY\nBag - https://amzlink.to/az0g52pEVvPjl\nShoes  - https://amzlink.to/az0B1Tp1AEiRs\nJacket  - https://amzlink.to/az08q4E2n7XFP\nTees - https://amzlink.to/az0oi0B6AQ39N\nBracelets  - https://amzlink.to/az0tprNRuHZrb\n\n10:52 - Furniture Salve - https://amzlink.to/az0fYpWNM68Vc\n\n11:03 - Salad Pod - https://amzlink.to/az0CYzxoVQQFT\n\n11:10 - Rice Cooker - https://amzlink.to/az0gsPObmCzis\n\n11:28 - Majeree Keyboard - https://amzlink.to/az0AUZqGPCxMb\n\n11:35 - Tote Bag - https://amzlink.to/az09Ib3YSRmV4\nSiser Metal - https://amzlink.to/az0trytICB41H\nSilicone Mat - https://amzlink.to/az0JmsyI3FsXl\nRoll  - https://amzlink.to/az0RodDk3xXTA\n\n11:55 - Ghost Paper - https://amzlink.to/az0lPtbFqbIfW\nTransfer Tape - https://amzlink.to/az04aGhnTvyjr\nPermanent  - https://amzlink.to/az0XHCGxsvvo6\n\n12:23 - Glow Sticks - https://amzlink.to/az0kgeMrg31hq\nTransfer  - https://amzlink.to/az0qEPppJqPPM\nPermanent  - https://amzlink.to/az0fMDNmsV9u0\n\n12:59 - Shaped Sunglasses - https://amzlink.to/az0t0NHtwayX1\nCraft Vinyl - https://amzlink.to/az0zFoUCgaDiI\n\n13:22 - Stamping Machine - https://amzlink.to/az0jieGgZI9Sd\n\n13:51 - Clothes Drying Rack - https://amzlink.to/az0qRB8eIaQ7o\n\n14:02 - Strathmore  - https://amzlink.to/az0Y68EnD2pSH\nPaint Set - https://amzlink.to/az0w0k5ueimok\nPiece Set - https://amzlink.to/az0lqVqnmu2rW\nSilicone Painting Mat - https://amzlink.to/az0PWP46MYGjp\n\n******************\nThe rest of the links are in the first comment of the video\nThe rest of the links are in the first comment of the video\nThe rest of the links are in the first comment of the video\nThe rest of the links are in the first comment of the video\n\namazon finds, must haves, product reviews, shopping tips, trendy products, top picks, home essentials, gadget reviews, lifestyle products, best buys, daily essentials, tech gadgets, organizational tools, must have items, shopping haul, deals and steals\n#amazonfinds #2023amazonmusthaves #tiktokmademebuyit #amazonmusthaves #reels",
+        "channelTitle": "TikTokMadeMeBroke"
+      },
+      "statistics": {
+        "viewCount": "10332",
+        "likeCount": "82",
+        "commentCount": "5"
+      }
+    },
+    {
+      "id": "fJMzzYTMliU",
+      "snippet": {
+        "publishedAt": "2022-04-12T16:01:03Z",
+        "title": "TikTok Made Me Buy It - Merrell Twins",
+        "description": "Sooo TikTok made us buy all the random things and we are showing you guys if these things work or not! What is something TikTok made you buy? 🤔 \nSUBSCRIBE TO MERRELL TWINS ▶ http://bit.ly/2dSP9Fg \nMERRELL TWINS LIVE ▶ https://www.youtube.com/merrelltwinslive\nOUR MERCH ▶ https://fanjoy.co/collections/merrell-twins\n\nFOLLOW US ON SOCIAL MEDIA\nMERRELL TWINS\nINSTAGRAM:▶ http://instagram.com/MerrellTwins\nTWITTER: ▶https://twitter.com/MerrellTwins\nFACEBOOK: https://www.facebook.com/MerrellTwins\nWEBSITE: www.merrelltwins.com\n \nVANESSA MERRELL\nINSTAGRAM: ▶http://instagram.com/vanessamerrell\nTWITTER: ▶https://twitter.com/VanessaMerrell\nTIKTOK: @vanessamerrell\n \nVERONICA MERRELL\nINSTAGRAM:▶http://instagram.com/veronicamerrell\nTWITTER: ▶https://twitter.com/veronicamerrell\nTIKTOK: @veronicamerrell\n\n @Aaron Burriss   @Paul Merrell  \n\n#tiktok\n\n\n tiktok amazon finds tiktok made me buy it",
+        "channelTitle": "merrelltwins"
+      },
+      "statistics": {
+        "viewCount": "4347297",
+        "likeCount": "43095",
+        "commentCount": "1568"
       }
     }
-  ],
-  "pageInfo": {
-    "totalResults": 3,
-    "resultsPerPage": 3
-  }
+  ]
 }

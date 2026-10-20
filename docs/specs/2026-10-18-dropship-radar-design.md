@@ -78,6 +78,22 @@ resolves each to its real product URL — verified on a sample: `amzn.to/3se9dWO
 Without resolution the hit-rate is 2.7%, which would starve the pipeline. With it, the ~1,449 links
 are the actual candidate pool. Hence the `resolve-links` stage in §4.
 
+**Re-measured 2026-10-20 over 557 mentions** (105 more videos, same queries), after the resolver
+and the cache join were in place:
+
+| Measure | Value |
+|---|---|
+| mentions with a direct `amazon.com/dp` ASIN | 17 (3.1%) |
+| mentions carrying an `amzn.to` / `a.co` link | 121 (21.7%) |
+| distinct short links seen | 1,703 |
+| short links attempted and resolved to an ASIN | 666 of 1,457 (45.7%) |
+| **mentions with a known ASIN** (direct or resolved) | **82 (14.7%)** |
+
+Two numbers matter and they are not the same: 45.7% of the links the resolver *attempted* resolved,
+and 14.7% of mentions ended up with a usable ASIN. The gap is the resolver's rate limit — it stopped
+on HTTP 429 with 246 links still unattempted — and descriptions that carry only storefront or
+non-product links. Re-running the resolver raises the first number, not the second.
+
 Also measured: 11.7% of descriptions route through a link aggregator (linktr.ee, beacons.ai, ltk),
 and the direct `amazon.com` links that do appear are mostly creator **storefronts**
 (`/shop/<creator>`, `/shop/.../list/<id>`), not product pages. Storefront list pages hold many
@@ -379,10 +395,14 @@ Slices 6-8 are independent and can be reordered or dropped without breaking 1-5.
 
 - **Validator parsers are unproven against live markup.** Nothing in §6-7 has been tested against a
   real Amazon, AliExpress or Ads Library page. This is the estimate most likely to move.
-- **ASIN hit-rate is now measured, and depends entirely on link resolution** (§2.2): 2.7% without it,
-  ~1,449 resolvable short links with it. Resolution was verified on a 3-link sample only. Expect real
-  coverage below 100% — dead links, region redirects, and links pointing at storefronts rather than
-  products. If `amzn.to` rate-limits at volume, the resolver must stop on 429, not grind.
+  **Closed for Amazon on 2026-10-20** (Task 8): the parser now runs against a captured product page
+  (`fixtures/amazon-product.html`), and price, rank and review count all parse from real markup.
+  AliExpress and the Ads Library are still unproven.
+- **ASIN hit-rate is now measured, and depends entirely on link resolution** (§2.2): 3.1% of mentions
+  carry a direct ASIN, 14.7% after resolution. Resolution was verified on a 3-link sample only.
+  Expect real coverage below 100% — dead links, region redirects, and links pointing at storefronts
+  rather than products. If `amzn.to` rate-limits at volume, the resolver must stop on 429, not grind.
+  It did: the 2026-10-20 run stopped on 429 with 246 links unattempted.
 - **Query quality is mediocre.** "tiktok made me buy it" surfaced talk shows and vlogs rather than
   affiliate reviewers. 79.9% of mentions name Amazon, so the queries work, but filtering to videos
   that actually carry affiliate links would raise signal. A `config.js` change, not a code change.

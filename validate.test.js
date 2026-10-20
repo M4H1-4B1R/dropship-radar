@@ -1,9 +1,13 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import path from 'node:path';
+import os from 'node:os';
 import { readFileSync, unlinkSync } from 'node:fs';
 import { runValidation } from './validate.js';
 
-const SNAPSHOTS = 'data/.validate-test-snapshots.jsonl';
+// Test snapshots live in the OS temp directory, never in data/ — a stray file
+// there could be mistaken for a real run's output.
+const SNAPSHOTS = path.join(os.tmpdir(), 'dropship-radar-validate-test-snapshots.jsonl');
 
 const fastConfig = {
   pacing: {
