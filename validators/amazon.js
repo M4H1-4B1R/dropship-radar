@@ -2,7 +2,7 @@
 // cost: 'browser' — Amazon blocks headless fetches, so this runs headed.
 import { openHeadedGuest } from '../lib/browser.js';
 import { isBlocked } from '../lib/browser.js';
-import { parseAmazonProduct } from '../lib/extract.js';
+import { parseAmazonProduct, isAmazonNotFound, isAmazonProductPage } from '../lib/extract.js';
 
 export default {
   name: 'amazon',
@@ -24,6 +24,15 @@ export default {
       });
       if (await isBlocked(page)) return { status: 'blocked' };
       const html = await page.content();
+      // A delisted ASIN lands on Amazon's "Page Not Found". That is known
+      // absence, not a product that happens to have no price.
+      if (isAmazonNotFound(html)) return { status: 'not_found' };
+      // A stripped page — nav and footer, no product detail — is Amazon
+      // throttling us. It holds no evidence, so it is a block, not a product
+      // with no price.
+      if (!isAmazonProductPage(html)) {
+        return { status: 'blocked', error: 'degraded page: no product detail container' };
+      }
       const parsed = parseAmazonProduct(html);
       return {
         status: 'ok',

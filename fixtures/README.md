@@ -8,6 +8,7 @@ files — never against a live site in a loop (see `AGENTS.md`).
 | `youtube-videos-response.json` | A YouTube Data API `videos.list` response, trimmed to the fields the parser reads: `id`, `snippet.publishedAt`, `snippet.title`, `snippet.description`, `snippet.channelTitle`, `statistics.*`. Six real videos: two with a direct `amazon.com/dp` link, two with `amzn.to` short links, one with 82 links of mixed shapes, one with no Amazon link at all. | 2026-10-20 |
 | `amazon-product.html` | A full Amazon product page (`amazon.com/dp/B0GCFPRJJ4`) — 2.8 MB of real markup. | 2026-10-20 |
 | `amazon-product.txt` | The same page's visible text, for reading. The parser never uses it. | 2026-10-20 |
+| `amazon-not-found.html` | Amazon's "Page Not Found" page (`amazon.com/dp/B00DB9WCR6`) — 2.3 KB. A delisted ASIN lands here; the validator must report `not_found`, not a product with no price. | 2026-10-20 |
 
 ## Why the YouTube fixture is trimmed
 

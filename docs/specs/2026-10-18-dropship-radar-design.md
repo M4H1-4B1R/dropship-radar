@@ -312,6 +312,14 @@ confidence of at least 0.5) take ranks 1, 2, 3; every other candidate is ranked 
 a v1 run without the AliExpress validator produces a list that starts at rank 4 rather than a list
 whose first three entries broke the rule. The brief says so in one line when it happens.
 
+**Which snapshot a product is judged on.** The snapshot file is a history, so a product can have
+several records. `score.js` uses, per validator, the **latest answer** — a record whose status is
+`ok` or `not_found`. A `blocked` record is *not* an answer: it says "we do not know now", and it
+must not throw away what the same validator reported earlier. `not_found` *is* an answer, so a
+delisted product reported as `not_found` today overrides an `ok` from last week. A validator that has
+never answered still counts as registered, so it still lowers the confidence. The brief prints the
+time each answer was observed, and says so when the latest check was blocked.
+
 **Why `ad_proof` carries the most weight:** a competitor paying to run the same ad for 60+ days is
 unit-economics evidence produced by someone who has the real numbers. Views and upvotes only prove
 attention. This is the closest free proxy to "profitable in the long run" that exists.
@@ -324,7 +332,13 @@ retuned after the first real shortlist is checked against known winners and lose
 - Every validator failure becomes a `status`, never an exception that escapes.
 - Two consecutive `blocked` results from one validator → that validator is disabled for the rest of
   the run, and every later snapshot records it as `blocked`.
-- Block detection is copied from the FB scraper: **stop, never loop-retry.**
+- **A stripped page is a block, not an empty product.** Amazon answers with a page that carries no
+  product detail — no title, no buy box — when it is throttling. That page holds no evidence, so the
+  validator records `blocked` rather than `ok` with a null price. The captured shape lives in
+  `fixtures/amazon-degraded.html`.
+- **A delisted ASIN is `not_found`, not an empty product.** Amazon's "Page Not Found" is known
+  absence (`fixtures/amazon-not-found.html`). It is the one status that may override an earlier `ok`.
+- **Block detection is copied from the FB scraper: stop, never loop-retry.**
 - All delays go through `lib/wait.js` jitter ranges; values live only in `config.js`. Random delay
   between browser hits, longer pause every 10 products.
 - `YT_API_KEY` lives in a gitignored `.env`, never in `config.js`.
@@ -411,3 +425,9 @@ Slices 6-8 are independent and can be reordered or dropped without breaking 1-5.
 - **Shopify store count via a search engine is a rough proxy** for saturation, biased by indexing lag.
 - **Any of the four scraped sources can break without warning.** The validator interface contains the
   blast radius to one file and one signal; it does not prevent the breakage.
+- **Amazon throttles by IP, and the throttle is invisible.** Measured 2026-10-20: after ~240 product
+  page loads in a day, Amazon answered with pages that had no product detail at all — no title, no
+  buy box, no captcha. `isBlocked` did not catch it (it only looks for a login wall). The validator now
+  recognises a stripped page and records `blocked`, and the two-consecutive-blocks rule switches the
+  validator off for the rest of the run. Expect a full validation run to need a few hours of cooldown
+  between runs, not 25 minutes of back-to-back browsing.
