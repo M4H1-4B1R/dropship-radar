@@ -137,3 +137,80 @@ test('two consecutive blocked results disable that validator for the rest of the
   // probe invoked only twice; the third product records disabled "blocked" without calling probe
   assert.strictEqual(calls, 2);
 });
+
+// Helper to run validation and return parsed snapshot lines
+async function runToLines(validators, products) {
+  reset();
+  await runValidation(products, validators, {
+    snapshotPath: SNAPSHOTS,
+    config: fastConfig,
+  });
+  return readSnapshots();
+}
+
+test('a validator needing another validator\'s field runs after it and reads its signal', async () => {
+  const first = {
+    name: 'amazon',
+    needs: ['asins'],
+    cost: 'browser',
+    async probe() {
+      return { status: 'ok', title: 'Real Title' };
+    },
+  };
+  const second = {
+    name: 'aliexpress',
+    needs: ['amazon.title'],
+    cost: 'browser',
+    async probe(p, ctx) {
+      return { status: 'ok', seen: ctx.signals.amazon.title };
+    },
+  };
+  // registered in the wrong order on purpose
+  const lines = await runToLines([second, first], [{ id: 'p1', asins: ['B0'] }]);
+  assert.strictEqual(lines[0].signals.aliexpress.seen, 'Real Title');
+});
+
+test('an unmet signal dependency skips the validator instead of guessing', async () => {
+  const first = {
+    name: 'amazon',
+    needs: ['asins'],
+    cost: 'browser',
+    async probe() {
+      return { status: 'blocked' };
+    },
+  };
+  let probed = false;
+  const second = {
+    name: 'aliexpress',
+    needs: ['amazon.title'],
+    cost: 'browser',
+    async probe() {
+      probed = true;
+      return { status: 'ok' };
+    },
+  };
+  const lines = await runToLines([first, second], [{ id: 'p1', asins: ['B0'], name: 'garbage name' }]);
+  assert.strictEqual(probed, false);
+  assert.deepStrictEqual(lines[0].signals.aliexpress, { status: 'not_found', reason: 'needs_unmet' });
+});
+
+test('a dependency that answered ok but without the needed field is also unmet', async () => {
+  const first = {
+    name: 'amazon',
+    needs: ['asins'],
+    cost: 'browser',
+    async probe() {
+      return { status: 'ok', title: null };
+    },
+  };
+  const second = {
+    name: 'aliexpress',
+    needs: ['amazon.title'],
+    cost: 'browser',
+    async probe() {
+      return { status: 'ok' };
+    },
+  };
+  const lines = await runToLines([first, second], [{ id: 'p1', asins: ['B0'] }]);
+  assert.strictEqual(lines[0].signals.aliexpress.reason, 'needs_unmet');
+});

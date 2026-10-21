@@ -35,10 +35,17 @@ export async function runValidation(products, validators, ctx = {}) {
   const snapshotPath = ctx.snapshotPath || DEFAULT_SNAPSHOT_PATH;
   const cfg = ctx.config || config;
   const done = await readDoneToday(snapshotPath);
-  // http validators first, then browser validators.
-  const registry = [...validators].sort(
+  
+  // Partition validators: those without dotted needs (independent) and those with (dependent).
+  // Independent validators are ordered http first, then browser.
+  // Dependent validators run after their dependencies.
+  const independent = validators.filter((v) => !v.needs?.some((n) => n.includes('.')));
+  const dependent = validators.filter((v) => v.needs?.some((n) => n.includes('.')));
+  
+  const orderedIndependent = [...independent].sort(
     (a, b) => Number(a.cost !== 'http') - Number(b.cost !== 'http')
   );
+  
   const consecutiveBlocked = new Map(); // validator name -> consecutive blocked count
 
   for (let i = 0; i < products.length; i++) {
@@ -46,7 +53,9 @@ export async function runValidation(products, validators, ctx = {}) {
     if (done.has(product.id)) continue;
 
     const signals = {};
-    for (const v of registry) {
+    
+    // Run independent validators first
+    for (const v of orderedIndependent) {
       // Two consecutive blocked results disable the validator for the rest of the run.
       if (consecutiveBlocked.get(v.name) >= 2) {
         signals[v.name] = { status: 'blocked' };
@@ -59,7 +68,54 @@ export async function runValidation(products, validators, ctx = {}) {
         continue;
       }
       try {
-        const signal = await v.probe(product, { ...ctx, config });
+        const signal = await v.probe(product, { ...ctx, config: cfg, signals });
+        signals[v.name] = signal || { status: 'ok' };
+        if (signals[v.name].status === 'blocked') {
+          consecutiveBlocked.set(v.name, (consecutiveBlocked.get(v.name) || 0) + 1);
+        } else {
+          consecutiveBlocked.set(v.name, 0);
+        }
+      } catch (err) {
+        // A validator that throws never escapes — recorded as blocked, run continues.
+        signals[v.name] = { status: 'blocked', error: String(err) };
+        consecutiveBlocked.set(v.name, (consecutiveBlocked.get(v.name) || 0) + 1);
+      }
+    }
+    
+    // Run dependent validators after their dependencies
+    for (const v of dependent) {
+      // Two consecutive blocked results disable the validator for the rest of the run.
+      if (consecutiveBlocked.get(v.name) >= 2) {
+        signals[v.name] = { status: 'blocked' };
+        continue;
+      }
+      
+      // Check dotted needs: e.g., "amazon.title"
+      let needsUnmet = false;
+      for (const need of v.needs || []) {
+        if (need.includes('.')) {
+          const [depName, depField] = need.split('.');
+          const depSignal = signals[depName];
+          if (!depSignal || depSignal.status !== 'ok' || depSignal[depField] == null) {
+            needsUnmet = true;
+            break;
+          }
+        } else {
+          // Non-dotted needs check against product
+          if (product[need] == null) {
+            needsUnmet = true;
+            break;
+          }
+        }
+      }
+      
+      if (needsUnmet) {
+        signals[v.name] = { status: 'not_found', reason: 'needs_unmet' };
+        continue;
+      }
+      
+      try {
+        const signal = await v.probe(product, { ...ctx, config: cfg, signals });
         signals[v.name] = signal || { status: 'ok' };
         if (signals[v.name].status === 'blocked') {
           consecutiveBlocked.set(v.name, (consecutiveBlocked.get(v.name) || 0) + 1);
@@ -75,7 +131,8 @@ export async function runValidation(products, validators, ctx = {}) {
 
     const okCount = Object.values(signals).filter((s) => s && s.status === 'ok').length;
     // Confidence divides by registered validators, not by four.
-    const confidence = registry.length ? okCount / registry.length : 0;
+    const allValidators = [...orderedIndependent, ...dependent];
+    const confidence = allValidators.length ? okCount / allValidators.length : 0;
 
     // Append immediately — a crash loses at most one product.
     await appendJsonl(snapshotPath, {
