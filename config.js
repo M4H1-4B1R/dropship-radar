@@ -26,6 +26,13 @@ export default {
     saturation: 0.2,
     durability: 0.1,
   },
+  aliexpress: {
+    minOrders: 100,
+    minRating: 4.0,
+    sampleSize: 3,
+    tolerance: 0.5,
+    queryWords: 8,     // Amazon titles are long; the first N words search better
+  },
   pacing: {
     betweenPagesMs: [6000, 12000],
     pauseEvery: 10,
