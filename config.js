@@ -27,7 +27,10 @@ export default {
     durability: 0.1,
   },
   aliexpress: {
-    minOrders: 100,
+    // 30, not 100: a search returns ~14 cards, and on 8 measured queries only
+    // 1-2 cleared 100 sold while 3 of 4 reached sampleSize at 30. minRating
+    // still screens quality; this only widens a pool that is thin by nature.
+    minOrders: 30,
     minRating: 4.0,
     sampleSize: 3,
     tolerance: 0.5,
