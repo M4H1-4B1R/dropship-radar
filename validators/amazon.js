@@ -2,7 +2,7 @@
 // cost: 'browser' — Amazon blocks headless fetches, so this runs headed.
 import { openHeadedGuest } from '../lib/browser.js';
 import { isBlocked } from '../lib/browser.js';
-import { parseAmazonProduct, isAmazonNotFound, isAmazonProductPage } from '../lib/extract.js';
+import { parseAmazonProduct, isAmazonNotFound, isAmazonProductPage, parsePackQty } from '../lib/extract.js';
 
 export default {
   name: 'amazon',
@@ -39,6 +39,8 @@ export default {
         price: parsed.price,
         rank: parsed.rank,
         reviews: parsed.reviews,
+        title: parsed.title,
+        packQty: parsePackQty(parsed.title),
       };
     } catch (err) {
       return { status: 'blocked', error: String(err) };
